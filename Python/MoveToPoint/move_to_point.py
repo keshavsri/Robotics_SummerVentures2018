@@ -12,10 +12,10 @@ from SummerVentures import SimpleVehicle, ang_diff
 def move_to_point(x_start, y_start, theta_start, x_goal, y_goal):
 	#These values work fine, but try tuning them once your simulation is working
 	#to see if you can improve how quickly your robot reaches the goal.
-	Kh = 2
-	Kv = 2
+	Kh = 10
+	Kv = 5
 	
-	dt = 0.1
+	dt = 0.01
 
 	vehicle = SimpleVehicle(x_start, y_start, theta_start, 1)
 	
@@ -23,15 +23,24 @@ def move_to_point(x_start, y_start, theta_start, x_goal, y_goal):
 	y = y_start
 	theta = theta_start
 
-	x_diff = x_goal-x
-	y_diff = y_goal-y
-	distance = sqrt(x_diff**2 + y_diff**2)
 
-	while distance > 1:
-		#############YOUR CODE GOES HERE#############
-		
-		
-		#############################################
+
+
+	while True:
+                x_goal = vehicle.goal[0]
+                y_goal = vehicle.goal[1]
+                x_diff = x_goal-x
+	        y_diff = y_goal-y
+                theta = theta + Kh*ang_diff(atan2(y_diff,x_diff),theta)*dt
+                distance = sqrt(x_diff**2 + y_diff**2)
+                v = Kv*distance
+                v_x = v*cos(theta)
+                v_y = v*sin(theta)
+                x = x + v_x*dt
+                y = y + v_y*dt
+                vehicle.update_pose(x,y,theta)
+                vehicle.plot(xlims=[-10,10],ylims=[-10,10])
+                
 
 if __name__ == '__main__':
 	if len(sys.argv) == 6:
